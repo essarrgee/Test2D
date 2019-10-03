@@ -18,8 +18,9 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inputdir.x = Input.GetAxis("Horizontal");
-		inputdir.y = Input.GetAxis("Vertical");
+        inputdir.x = Input.GetAxisRaw("Horizontal");
+		inputdir.y = Input.GetAxisRaw("Vertical");
+		inputdir = inputdir.normalized;
     }
 	
 	void FixedUpdate()
