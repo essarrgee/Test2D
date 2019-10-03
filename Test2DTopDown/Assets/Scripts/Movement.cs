@@ -8,6 +8,7 @@ public class Movement : MonoBehaviour
 	public bool mouseAim; //if true, character faces mouse
 	public float speed;
 	public float projectileSpeed;
+	public float projectileRate;
 	
 	private Rigidbody2D rb;
 	private Camera cam;
@@ -15,14 +16,18 @@ public class Movement : MonoBehaviour
 	
 	private Vector2 inputdir;
 	private Vector2 mouse2WorldPoint;
+	private float currentTick;
 	
     // Start is called before the first frame update
     void Awake()
     {
-		//mouseAim = true;
-		mouseAim = false;
+		mouseAim = true;
+		//mouseAim = false;
 		speed = 5f;
 		projectileSpeed = 25f;
+		projectileRate = 0.1f;
+		
+		currentTick = 0f;
 		
 		rb = this.GetComponent<Rigidbody2D>();
 		cam = Camera.main;
@@ -45,8 +50,15 @@ public class Movement : MonoBehaviour
 			mouse2WorldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
 		}
 		//Mouse input
-		if(Input.GetButtonDown("Fire1")) { //Default MouseButton1
+		//if (Input.GetButtonDown("Fire1")) { //Default MouseButton1
+		//	FireProjectile();
+		//}
+		if (Input.GetKey(KeyCode.Mouse0) && currentTick >= projectileRate) {
+			currentTick = 0f;
 			FireProjectile();
+		}
+		else {
+			currentTick += Time.deltaTime;
 		}
     }
 	
