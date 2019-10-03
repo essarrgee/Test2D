@@ -4,22 +4,29 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+	public GameObject projectilePrefab;
 	public bool mouseAim; //if true, character faces mouse
 	public float speed;
+	public float projectileSpeed;
 	
 	private Rigidbody2D rb;
 	private Camera cam;
+	private Transform firePoint;
 	
 	private Vector2 inputdir;
 	private Vector2 mouse2WorldPoint;
 	
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-		cam = Camera.main;
+		//mouseAim = true;
+		mouseAim = false;
 		speed = 5f;
-        rb = this.GetComponent<Rigidbody2D>();
-		mouseAim = true;
+		projectileSpeed = 25f;
+		
+		rb = this.GetComponent<Rigidbody2D>();
+		cam = Camera.main;
+		firePoint = GameObject.FindWithTag("FirePoint").transform; //Finds firePoint object, which is tagged by "FirePoint"
 		
 		rb.freezeRotation = true; //rotation is not affected by physics
 		rb.gravityScale = 0; //amount that object is affected by gravity
@@ -38,7 +45,9 @@ public class Movement : MonoBehaviour
 			mouse2WorldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
 		}
 		//Mouse input
-		
+		if(Input.GetButtonDown("Fire1")) { //Default MouseButton1
+			FireProjectile();
+		}
     }
 	
 	void FixedUpdate()
@@ -53,5 +62,13 @@ public class Movement : MonoBehaviour
 			//rb.MoveRotation(faceAngle); //built-in lerp rotation
 			rb.rotation = faceAngle;
 		}
+	}
+	
+	void FireProjectile() {
+		GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+		Rigidbody2D rbp = projectile.GetComponent<Rigidbody2D>();
+		rbp.AddForce(firePoint.up*projectileSpeed, ForceMode2D.Impulse);
+		
+		Destroy(projectile, 1);
 	}
 }
