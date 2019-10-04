@@ -11,6 +11,8 @@ public class Movement : MonoBehaviour
 	public float projectileRate;
 	
 	private Rigidbody2D rb;
+	private Animator animator;
+	private SpriteRenderer sprite;
 	private Camera cam;
 	private Transform firePoint;
 	
@@ -21,8 +23,8 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-		mouseAim = true;
-		//mouseAim = false;
+		//mouseAim = true;
+		mouseAim = false;
 		speed = 5f;
 		projectileSpeed = 25f;
 		projectileRate = 0.1f;
@@ -30,6 +32,8 @@ public class Movement : MonoBehaviour
 		currentTick = 0f;
 		
 		rb = this.GetComponent<Rigidbody2D>();
+		animator = this.GetComponent<Animator>();
+		sprite = this.GetComponent<SpriteRenderer>();
 		cam = Camera.main;
 		firePoint = GameObject.FindWithTag("FirePoint").transform; //Finds firePoint object, which is tagged by "FirePoint"
 		
@@ -46,8 +50,18 @@ public class Movement : MonoBehaviour
 		inputdir.y = Input.GetAxisRaw("Vertical");
 		inputdir = inputdir.normalized; //normalize input direction
 		//Get Mouse Position
-		if (mouseAim) {
+		if (mouseAim) { 
 			mouse2WorldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
+		}
+		else { //Play animation instead
+			animator.SetFloat("Horizontal", inputdir.x);
+			animator.SetFloat("Vertical", inputdir.y);
+			if (inputdir.x > 0) {
+				sprite.flipX = true;
+			}
+			else if (inputdir.x < 0) {
+				sprite.flipX = false;
+			}
 		}
 		//Mouse input
 		//if (Input.GetButtonDown("Fire1")) { //Default MouseButton1
